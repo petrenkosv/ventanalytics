@@ -1,0 +1,57 @@
+{
+  "name": "ventanalytics",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "prod:start:server": "pm2 start scraping/index.js --name=va_server",
+    "prod:start:scraping": "pm2 start scraping/index.js --name=va_scraping",
+    "prod:start:widgets": "pm2 start scraping/index.js --name=va_widgets",
+    "prod:stop:server": "pm2 stop va_server",
+    "prod:stop:scraping": "pm2 stop va_scraping",
+    "prod:stop:widgets": "pm2 stop va_widgets",
+    "prod:restart:server": "pm2 restart va_server",
+    "prod:restart:scraping": "pm2 restart va_scraping",
+    "prod:restart:widgets": "pm2 restart va_widgets",
+    "prod:delete:server": "pm2 delete va_server",
+    "prod:delete:scraping": "pm2 delete va_scraping",
+    "prod:delete:widgets": "pm2 delete va_widgets",
+    "dev:api": "nodemon web-server/index.js",
+    "dev:scraping": "nodemon scraping/index.js",
+    "dev:widgets": "nodemon widgets/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/turovnd/ventanalytics.git"
+  },
+  "author": "Nikolay Turov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/turovnd/ventanalytics/issues"
+  },
+  "homepage": "https://github.com/turovnd/ventanalytics#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.2",
+    "cheerio": "^1.0.0-rc.2",
+    "crypto": "^1.0.1",
+    "crypto-js": "^3.1.9-1",
+    "dotenv": "^5.0.1",
+    "express": "^4.16.2",
+    "express-recaptcha": "^4.0.2",
+    "facebook-node-sdk": "^0.2.0",
+    "jsonwebtoken": "^8.2.0",
+    "mongodb": "^3.0.4",
+    "nodemailer": "^4.6.5",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "passport-strategy": "^1.0.0",
+    "path": "^0.12.7",
+    "pg": "^7.4.1",
+    "pg-hstore": "^2.3.2",
+    "redis": "^2.8.0",
+    "request": "^2.83.0",
+    "sequelize": "^4.37.5",
+    "telegram-bot-api": "^1.2.0",
+    "winston": "^2.4.0"
+  }
+}

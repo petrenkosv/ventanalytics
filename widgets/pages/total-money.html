@@ -1,0 +1,74 @@
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+        <meta name="description" content="">
+        <meta name="viewport" content="maximum-scale=1.0,width=device-width,initial-scale=1.0,user-scalable=0">
+        <title>Venture Analytics - Total Money</title>
+
+        <script type="text/javascript" src="//www.gstatic.com/charts/loader.js"></script>
+        <script type="text/javascript">
+
+            let getData = () => {
+                return fetch("https://api.ventanalytics.ru/widgets/total-money")
+                    .then(response => {
+                        return response.json();
+                    })
+                    .then(data => {
+                        return data.data
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        return [];
+                    });
+            };
+
+            let toDollars = (x) => {
+                x = x.toString();
+                let pattern = /(-?\d+)(\d{3})/;
+                while (pattern.test(x))
+                    x = x.replace(pattern, "$1,$2");
+                return '$'+x;
+            };
+
+            google.charts.load('current', {'packages':['table']});
+            google.charts.setOnLoadCallback( async () => {
+
+
+                let dataGet = await getData(),
+                    dataArray = [];
+
+                for (let i in dataGet) {
+
+                    if (dataGet[i].finance.totalMoney !== -1)
+                    dataArray.push([
+                        dataGet[i].name,
+                        {
+                            v: parseInt(dataGet[i].finance.totalMoney),
+                            f:  toDollars(parseInt(dataGet[i].finance.totalMoney)),
+                        },
+                        new Date(dataGet[i].dates.icoEnd)
+                    ])
+
+                }
+
+                let data = new google.visualization.DataTable();
+
+                data.addColumn('string', 'Name');
+                data.addColumn('number', 'Raised');
+                data.addColumn('date', 'ICO end date');
+                data.addRows(dataArray);
+
+                document.getElementById('loading').remove();
+                let table = new google.visualization.Table(document.getElementById('table'));
+                table.draw(data, {showRowNumber: true, width: '100%', sortColumn: 2});
+            });
+
+        </script>
+    </head>
+
+    <body>
+        <div id="loading" style="width: 100%; height: 100%; position:relative;"><div style="font-size: 2em; position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%)">Loading ...</div></div>
+        <div id="table" style="width: 95%; height: 100%; margin: auto"></div>
+    </body>
+</html>

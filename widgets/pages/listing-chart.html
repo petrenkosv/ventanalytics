@@ -1,0 +1,92 @@
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+        <meta name="description" content="">
+        <meta name="viewport" content="maximum-scale=1.0,width=device-width,initial-scale=1.0,user-scalable=0">
+        <title>Venture Analytics - Listing Chart</title>
+
+        <script type="text/javascript" src="//www.gstatic.com/charts/loader.js"></script>
+        <script type="text/javascript">
+
+            let getDateByWeek = (week, opt) => {
+                let curr = null;
+                switch (week) {
+                    case "current": curr = new Date(); break;
+                    case "prev": curr = new Date( +new Date() - 7*24*60*60*1000); break;
+                    case "next": curr = new Date( +new Date() + 7*24*60*60*1000); break;
+                }
+
+                if (!curr) return null;
+
+                let first = curr.getDate() - curr.getDay(),
+                    last = first + 6,
+                    date = null;
+
+                switch (opt) {
+                    case "start": date = new Date(curr.setDate(first)); break;
+                    case "end":  date = new Date(curr.setDate(last)); break;
+                }
+
+                if (!date) return null;
+
+                return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+            };
+
+            let getData = () => {
+                return fetch("https://api.ventanalytics.ru/widgets/listing-chart")
+                    .then(response => {
+                        return response.json();
+                    })
+                    .then(data => {
+                        return data.data
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        return [];
+                    });
+            };
+
+            google.charts.load('current', {'packages':['corechart']});
+            google.charts.setOnLoadCallback( async () => {
+
+                let dataJSON = await getData();
+
+                let categories = ["Blockchain service", "Crypto", "Energy", "Finance", "Game and VR", "High tech", "Insurance", "Marketing", "Security", "Trading"];
+
+                let dataArray = [['Category', 'Current week', 'Next week']];
+
+                for (let i in categories) {
+
+                    dataArray.push([
+                        categories[i],
+                        dataJSON["current"][categories[i]],
+                        dataJSON["next"][categories[i]]
+                    ])
+                }
+
+                let data = google.visualization.arrayToDataTable(dataArray);
+
+                let options = {
+                    title : 'Listing chart',
+                    titleTextStyle: {fontSize: 30},
+                    colors: ["#28abe2","#ff9902"],
+                    // vAxis: {title: ''},
+                    // hAxis: {title: ''},
+                    seriesType: 'bars',
+                    series: {2: {type: 'line'}}
+                };
+                document.getElementById('loading').remove();
+                let chart = new google.visualization.ComboChart(document.getElementById('chart'));
+                chart.draw(data, options);
+
+            });
+
+        </script>
+    </head>
+
+    <body>
+        <div id="loading" style="width: 100%; height: 100%; position:relative;"><div style="font-size: 2em; position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%)">Loading ...</div></div>
+        <div id="chart" style="width: 95%; height: 100%; margin: auto"></div>
+    </body>
+</html>

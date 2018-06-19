@@ -1,0 +1,116 @@
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+        <meta name="description" content="">
+        <meta name="viewport" content="maximum-scale=1.0,width=device-width,initial-scale=1.0,user-scalable=0">
+        <title>Venture Analytics - Token Index</title>
+
+        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        <link href="https://ajax.googleapis.com/ajax/static/modules/gviz/1.0/core/tooltip.css" rel="stylesheet" type="text/css">
+        <style>
+            .chart {width: 95%; height: 100%; margin: auto}
+            #loading {width: 100%; height: 100%; position:relative;}
+            #loading > div {font-size: 2em; position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%)}
+        </style>
+        <script type="text/javascript" src="//www.gstatic.com/charts/loader.js"></script>
+
+        <script type="text/javascript">
+
+
+            let getData = (mode) => {
+                return fetch("https://api.ventanalytics.ru/widgets/token-index?mode=" + mode)
+                    .then(response => {
+                        return response.json();
+                    })
+                    .then(data => {
+                        return data.data
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        return [];
+                    });
+            };
+
+            let options = {
+                titleTextStyle: {fontSize: 30},
+                colors: ["#28abe2"],
+                legend: {position: 'none'}
+            };
+
+            let createChart_ = async (mode) => {
+                let indexes = await getData(mode);
+                let dataArray = [['Date', 'Token index']];
+
+                for (let i in indexes) {
+                    await dataArray.push([new Date(indexes[i].label), indexes[i].value]);
+                }
+
+                return google.visualization.arrayToDataTable(dataArray);
+            };
+
+
+            google.charts.load('current', {'packages':['corechart']});
+            google.charts.setOnLoadCallback( async () => {
+
+                let chart = new google.visualization.LineChart(document.getElementById('chart_day'));
+                options['title'] = 'Token index - day';
+                chart.draw(await createChart_('day'), options);
+
+                document.getElementById('loading').style.display = "none";
+                delete options['title'];
+
+
+                let tabs = document.querySelectorAll('.js-click');
+
+                for (let i = 0; i < tabs.length; i++) {
+                    tabs[i].addEventListener('click', async (event) => {
+                        document.getElementById('loading').style.display = "block";
+                        let mode = event.target.dataset.mode;
+
+                        document.getElementById('chart_' + mode).innerHTML = "";
+
+                        let chart = new google.visualization.LineChart(document.getElementById('chart_' + mode));
+                        options['title'] = 'Token index - ' + mode;
+                        chart.draw(await createChart_(mode), options);
+                        delete options['title'];
+                        document.getElementById('loading').style.display = "none";
+                    }, false);
+                }
+
+            });
+
+        </script>
+    </head>
+
+    <body>
+        <div id="loading"><div>Loading ...</div></div>
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#day" class="js-click" aria-controls="main" role="tab" data-toggle="tab" data-mode="day">Day</a></li>
+            <li role="presentation"><a href="#week" class="js-click" aria-controls="sec" role="tab" data-toggle="tab" data-mode="week">Week</a></li>
+            <li role="presentation"><a href="#month" class="js-click" aria-controls="sec" role="tab" data-toggle="tab" data-mode="month">Month</a></li>
+            <li role="presentation"><a href="#quarter" class="js-click" aria-controls="sec" role="tab" data-toggle="tab" data-mode="quarter">Quarter</a></li>
+            <li role="presentation"><a href="#year" class="js-click" aria-controls="sec" role="tab" data-toggle="tab" data-mode="year">Year</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="day">
+                <div id="chart_day" class="chart"></div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="week">
+                <div id="chart_week" class="chart"></div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="month">
+                <div id="chart_month" class="chart"></div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="quarter">
+                <div id="chart_quarter" class="chart"></div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="year">
+                <div id="chart_year" class="chart"></div>
+            </div>
+        </div>
+    </body>
+</html>
