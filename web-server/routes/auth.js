@@ -14,8 +14,8 @@ const recaptcha = new Recaptcha(process.env.RECAPTCHA_SITE_KEY, process.env.RECA
  */
 router.post('/signup', /*recaptcha.middleware.verify,*/ async (req, res, next) => {
 
-    if (req.recaptcha.error)
-        return res.json( { error: "ReCaptcha is not valid" } );
+//    if (req.recaptcha.error)
+//        return res.json( { error: "ReCaptcha is not valid" } );
 
     if (!req.body.name || req.body.name === "")
         return res.json( { error: "Name field could not be empty" } );
@@ -87,8 +87,8 @@ router.post('/signin', async (req, res, next) => {
  */
 router.post('/reset', /*recaptcha.middleware.verify,*/ async (req, res, next) => {
 
-    if (req.recaptcha.error)
-        return res.json( { error: "ReCaptcha is not valid" } );
+//    if (req.recaptcha.error)
+//        return res.json( { error: "ReCaptcha is not valid" } );
 
     if (!req.body.email || req.body.email === "" || !/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(req.body.email))
         return res.json( { error: "Error email format" } );
@@ -116,8 +116,8 @@ router.post('/reset', /*recaptcha.middleware.verify,*/ async (req, res, next) =>
  */
 router.post('/recovery', /*recaptcha.middleware.verify,*/ async (req, res, next) => {
 
-    if (req.recaptcha.error)
-        return res.json( { error: "ReCaptcha is not valid" } );
+//    if (req.recaptcha.error)
+//        return res.json( { error: "ReCaptcha is not valid" } );
 
     if (!req.body.password || req.body.password === "")
         return res.json( { error: "Password field could not be empty" } );
