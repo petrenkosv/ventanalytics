@@ -53,7 +53,7 @@ let register_ = async (data) => {
             '</p><p>Thank you</p>'
     };
 
-    await Nodemailer.sendMail(mailOptions);
+//    await Nodemailer.sendMail(mailOptions);
 
     return user
 };
@@ -119,7 +119,7 @@ let reset_ = async (data) => {
             '<p>Thank you</p>'
     };
 
-    await Nodemailer.sendMail(mailOptions);
+//    await Nodemailer.sendMail(mailOptions);
 
     return "success";
 };
