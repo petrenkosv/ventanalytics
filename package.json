@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "prod:start:server": "pm2 start scraping/index.js --name=va_server",
+    "prod:start:server": "pm2 start web-server/index.js --name=va_server",
     "prod:start:scraping": "pm2 start scraping/index.js --name=va_scraping",
-    "prod:start:widgets": "pm2 start scraping/index.js --name=va_widgets",
+    "prod:start:widgets": "pm2 start widgets/index.js --name=va_widgets",
     "prod:stop:server": "pm2 stop va_server",
     "prod:stop:scraping": "pm2 stop va_scraping",
     "prod:stop:widgets": "pm2 stop va_widgets",
