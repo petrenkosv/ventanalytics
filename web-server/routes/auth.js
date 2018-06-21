@@ -12,7 +12,7 @@ const recaptcha = new Recaptcha(process.env.RECAPTCHA_SITE_KEY, process.env.RECA
  *
  * @example auth/signup
  */
-router.post('/signup', recaptcha.middleware.verify, async (req, res, next) => {
+router.post('/signup', /*recaptcha.middleware.verify,*/ async (req, res, next) => {
 
     if (req.recaptcha.error)
         return res.json( { error: "ReCaptcha is not valid" } );
@@ -85,7 +85,7 @@ router.post('/signin', async (req, res, next) => {
  *
  * @example auth/reset
  */
-router.post('/reset', recaptcha.middleware.verify, async (req, res, next) => {
+router.post('/reset', /*recaptcha.middleware.verify,*/ async (req, res, next) => {
 
     if (req.recaptcha.error)
         return res.json( { error: "ReCaptcha is not valid" } );
@@ -114,7 +114,7 @@ router.post('/reset', recaptcha.middleware.verify, async (req, res, next) => {
  *
  * @example auth/recovery
  */
-router.post('/recovery', recaptcha.middleware.verify, async (req, res, next) => {
+router.post('/recovery', /*recaptcha.middleware.verify,*/ async (req, res, next) => {
 
     if (req.recaptcha.error)
         return res.json( { error: "ReCaptcha is not valid" } );
